@@ -11,3 +11,8 @@ CommitMsg:
 
   RussianNovel:
     enabled: true
+
+PrePush:
+  PrintDiffUrls:
+    enabled: true
+    on_fail: warn
