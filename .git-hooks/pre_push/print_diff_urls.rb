@@ -1,7 +1,13 @@
 require 'git'
+require 'overcommit'
 
 module Overcommit::Hook::PrePush
   class PrintDiffUrls < Base
+    def initialize(config, context)
+      super(config, context)
+      @url_formatter = GitRemoteUrlFormatter.new
+    end
+
     def description
       super_desc = super
       begin
@@ -26,7 +32,7 @@ module Overcommit::Hook::PrePush
 
     def format_description(super_desc, branch, remotes)
       if remotes.size == 1
-        formatted_remotes = "  #{format_url remotes[0].url, branch}"
+        formatted_remotes = "  #{@url_formatter.compare_url remotes.first.url, branch}"
       else
         formatted_remotes = remotes.map{ |r| "  #{format_remote r, branch}" }.join "\n"
       end
@@ -34,37 +40,45 @@ module Overcommit::Hook::PrePush
       [super_desc, formatted_remotes, ''].join "\n"
     end
 
-    def is_ssh(url)
-      url.match /^.*@.+:.+$/
-    end
-
-    def ssh_to_https(url)
-      host, path = url.match(/^.*@(.+):(.+).git/).captures
-      "https://#{host}/#{path}"
-    end
-
     def format_remote(remote, branch)
-      "#{remote.name}: #{format_url remote.url, branch}"
+      "#{remote.name}: #{@url_formatter.compare_url remote.url, branch}"
     end
+  end
+end
 
-    def coerce_scheme(url)
-      if is_ssh(url)
-        ssh_to_https url
-      else
-        url
-      end
-    end
+class GitRemoteUrlFormatter
+  def format_base_url(url)
+    coerce_scheme url
+  end
 
-    def branch_compare(url, base, branch)
-      "#{url}/compare/#{base}...#{branch}"
-    end
+  def compare_url(url, branch)
+    master_compare url, branch
+  end
 
-    def master_compare(url, branch)
-      branch_compare url, 'master', branch
-    end
+  private
 
-    def format_url(url, branch)
-      master_compare coerce_scheme(url), branch
+  def master_compare(url, branch)
+    branch_compare url, 'master', branch
+  end
+
+  def branch_compare(url, base, branch)
+    "#{url}/compare/#{base}...#{branch}"
+  end
+
+  def is_ssh(url)
+    url.match /^.*@.+:.+$/
+  end
+
+  def ssh_to_https(url)
+    host, path = url.match(/^.*@(.+):(.+).git/).captures
+    "https://#{host}/#{path}"
+  end
+
+  def coerce_scheme(url)
+    if is_ssh(url)
+      ssh_to_https url
+    else
+      url
     end
   end
 end
