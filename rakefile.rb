@@ -11,10 +11,17 @@ end
 namespace :hooks do
   desc 'Copies all hooks in `hooks/` to `.git-hooks/`'
   task :install do
-    git_hooks = Dir.chdir(".git-hooks"){ Dir.pwd }
-    hooks_dirs = ["hooks", "meta-hooks"]
+    plugin_directory = ".git-hooks"
+    src_hooks_dirs = ["hooks", "meta-hooks"]
 
-    hooks_dirs.each do |hook_dir|
+
+    if !Dir.exists?(plugin_directory)
+      mkdir plugin_directory
+    end
+
+    git_hooks = Dir.chdir(plugin_directory){ Dir.pwd }
+
+    src_hooks_dirs.each do |hook_dir|
       Dir.chdir hook_dir do
         Dir.glob "**/*.rb" do |path|
           dest = "#{git_hooks}/#{path}"

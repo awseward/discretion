@@ -9,13 +9,22 @@ module Overcommit::Hook::PreCommit
         end
       end.flatten
 
-      messages = [
-        "Source hooks:",
-        src_hooks.map{|h| "  #{h}"}.join("\n"),
-        "Target dir: #{plugin_dir}",
-      ]
+      dest_hooks = Dir.chdir plugin_dir do
+        Dir.glob "**/*.rb"
+      end
 
-      [:warn, messages.join("\n")]
+      missing_hooks = src_hooks - dest_hooks
+
+      if missing_hooks.any?
+        messages = [
+          "The following hooks are missing from #{plugin_dir}",
+          missing_hooks.map{|h| "  #{h}"}.join("\n"),
+        ]
+
+        [:warn, messages.join("\n")]
+      else
+        :pass
+      end
     end
 
     private
