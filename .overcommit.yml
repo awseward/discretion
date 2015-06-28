@@ -1,6 +1,9 @@
 # https://github.com/brigade/overcommit
 
 PreCommit:
+  BundleCheck:
+    enabled: true
+
   TrailingWhitespace:
     enabled: true
     problem_on_unmodified_line: ignore
