@@ -4,6 +4,10 @@ PreCommit:
   BundleCheck:
     enabled: true
 
+  EatYourDogfood:
+    enabled: true
+    garbage: "does_this_work?"
+
   TrailingWhitespace:
     enabled: true
     problem_on_unmodified_line: ignore

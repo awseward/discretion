@@ -1,3 +1,4 @@
+require 'fileutils'
 require 'rake/testtask'
 
 task :default => [:test]
@@ -11,10 +12,18 @@ namespace :hooks do
   desc 'Copies all hooks in `hooks/` to `.git-hooks/`'
   task :install do
     git_hooks = Dir.chdir(".git-hooks"){ Dir.pwd }
+    hooks_dirs = ["hooks", "meta-hooks"]
 
-    Dir.chdir "hooks" do
-      Dir.glob "**/*.rb" do |path|
-        cp_r path, "#{git_hooks}/#{path}"
+    hooks_dirs.each do |hook_dir|
+      Dir.chdir hook_dir do
+        Dir.glob "**/*.rb" do |path|
+          dest = "#{git_hooks}/#{path}"
+
+          dest_dir = File.dirname dest
+          FileUtils.mkdir_p(dest_dir) if !Dir.exists? dest_dir
+
+          cp_r path, dest
+        end
       end
     end
   end
