@@ -1,7 +1,7 @@
 require 'overcommit'
 
 module Overcommit::Hook::PreCommit
-  class EatYourDogfood < Base
+  class KeepYourDogfoodFresh < Base
     def run
       [:warn, "TODO"]
     end

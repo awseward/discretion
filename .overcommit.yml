@@ -6,7 +6,10 @@ PreCommit:
 
   EatYourDogfood:
     enabled: true
-    garbage: "does_this_work?"
+    custom_config_field: "You can totally do this..."
+
+  KeepYourDogfoodFresh:
+    enabled: true
 
   TrailingWhitespace:
     enabled: true
