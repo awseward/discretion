@@ -3,6 +3,7 @@ GEM
   specs:
     git (1.2.9.1)
     minitest (5.7.0)
+    rake (10.4.2)
 
 PLATFORMS
   ruby
@@ -10,3 +11,7 @@ PLATFORMS
 DEPENDENCIES
   git (~> 1.2)
   minitest (~> 5.7)
+  rake (~> 10.4)
+
+BUNDLED WITH
+   1.10.5
