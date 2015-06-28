@@ -1,4 +1,5 @@
 require 'git'
+require 'overcommit'
 
 module Overcommit::Hook::PrePush
   class PrintDiffUrls < Base
