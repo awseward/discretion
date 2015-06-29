@@ -12,8 +12,6 @@ PreCommit:
 
   FearOfCommitment:
     enabled: true
-    files_touched: 20
-    lines_touched: 200
 
   TrailingWhitespace:
     enabled: true
