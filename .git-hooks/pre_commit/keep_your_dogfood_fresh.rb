@@ -7,7 +7,42 @@ module Overcommit::Hook::PreCommit
     end
 
     def run
-      [:warn, "TODO"]
+      src_hook_info = get_src_hook_info
+      plugin_dir = get_plugin_dir
+
+      paths = src_hook_info.map do |info|
+        src_dir = info[:src_dir]
+
+        info[:rel_paths].map do |rel_path|
+          src_path = "#{src_dir}/#{rel_path}"
+          dest_path = "#{plugin_dir}/#{rel_path}"
+
+          {:src => src_path, :dest => dest_path}
+        end
+      end.flatten
+
+      bad = paths.select do |p|
+        !FileUtils.compare_file p[:src], p[:dest]
+      end
+
+      if bad.any?
+        messages = [
+          "The following hooks have gone bad:",
+          stale.map{|p| "  #{p[:dest]}"}.join("\n")
+        ]
+
+        [:warn, messages.join("\n")]
+      else
+        :pass
+      end
+    end
+
+    def get_src_hook_info
+      DogfoodServiceObject.get_source_hooks(['hooks', 'meta-hooks'])
+    end
+
+    def get_plugin_dir
+      PluginDirectoryWorkaround.get_plugin_dir
     end
   end
 end
