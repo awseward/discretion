@@ -30,29 +30,35 @@ module Overcommit::Hook::PreCommit
     private
 
     def plugin_dir
-      loaded_plugin_dir = Overcommit::ConfigurationLoader.load_from_file('.overcommit.yml').plugin_directory
-      wrong_githooks_workaround loaded_plugin_dir
-    end
-
-    # Can get rid of this when this issue is solved
-    # https://github.com/brigade/overcommit/pull/234
-    def wrong_githooks_workaround(plugin_dir)
-      if plugin_dir =~ /.*\.githooks$/
-        Dir.exists?(plugin_dir) ? plugin_dir : fix_plugin_dir(plugin_dir)
-      else
-        plugin_dir
-      end
-    end
-
-    # Can get rid of this when this issue is solved
-    # https://github.com/brigade/overcommit/pull/234
-    def fix_plugin_dir(path)
-      dir_name = File.dirname(path)
-      "#{dir_name}/.git-hooks"
+      loaded = Overcommit::ConfigurationLoader.load_from_file('.overcommit.yml').plugin_directory
+      WrongGithooksWorkaround.fix_plugin_dir loaded
     end
 
     def hooks_dirs
       config['hooks_dirs'] || ['hooks', 'meta-hooks']
+    end
+  end
+end
+
+# Can get rid of this when this issue is solved
+# https://github.com/brigade/overcommit/pull/234
+class WrongGithooksWorkaround
+  def self.fix_plugin_dir(path)
+    if path =~ /\.githooks$/
+      Dir.exists?(path) ? path : get_correct_default(path)
+    else
+      path
+    end
+  end
+
+  private
+
+  def self.get_correct_default(path)
+    dir_name = File.dirname(path)
+    if dir_name =~ /\w/
+      "#{dir_name}/.git-hooks"
+    else
+      ".git-hooks"
     end
   end
 end
