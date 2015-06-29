@@ -14,7 +14,6 @@ namespace :hooks do
     plugin_directory = ".git-hooks"
     src_hooks_dirs = ["hooks", "meta-hooks"]
 
-
     if !Dir.exists?(plugin_directory)
       mkdir plugin_directory
     end
@@ -32,6 +31,24 @@ namespace :hooks do
           cp_r path, dest
         end
       end
+    end
+  end
+
+  desc 'Signs all overcommit hooks'
+  task :sign do
+    hook_types = [
+      'commit_msg',
+      'post_checkout',
+      'post_commit',
+      'post_merge',
+      'post_rewrite',
+      'pre_commit',
+      'pre_push',
+      'pre_rebase',
+    ]
+
+    hook_types.each do |type|
+      sh "overcommit --sign #{type}"
     end
   end
 end
