@@ -6,10 +6,14 @@ PreCommit:
 
   EatYourDogfood:
     enabled: true
-    custom_config_field: "You can totally do this..."
 
   KeepYourDogfoodFresh:
     enabled: true
+
+  FearOfCommitment:
+    enabled: true
+    files_touched: 20
+    lines_touched: 200
 
   TrailingWhitespace:
     enabled: true
