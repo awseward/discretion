@@ -3,7 +3,7 @@ require 'overcommit'
 module Overcommit::Hook::PreCommit
   class KeepYourDogfoodFresh < Base
     def description
-      "Checking that your dogfood is fresh"
+      "Checking for outdated plugins"
     end
 
     def run

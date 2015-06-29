@@ -3,7 +3,7 @@ require 'overcommit'
 module Overcommit::Hook::PreCommit
   class EatYourDogfood < Base
     def description
-      "Checking that you're eating your dog food"
+      "Checking for missing plugins"
     end
 
     def run
