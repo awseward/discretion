@@ -22,16 +22,16 @@ module Overcommit::Hook::PreCommit
       end.flatten
 
       bad = paths.select do |p|
-        !FileUtils.compare_file p[:src], p[:dest]
+        hook_is_bad p[:src], p[:dest]
       end
 
       if bad.any?
         messages = [
           "The following hooks have gone bad:",
-          stale.map{|p| "  #{p[:dest]}"}.join("\n")
+          bad.map{|p| "  #{p[:dest]}"}.join("\n")
         ]
 
-        [:warn, messages.join("\n")]
+        [:fail, messages.join("\n")]
       else
         :pass
       end
@@ -45,6 +45,10 @@ module Overcommit::Hook::PreCommit
 
     def get_plugin_dir
       PluginDirectoryWorkaround.get_plugin_dir
+    end
+
+    def hook_is_bad(src, dest)
+      File.exists?(dest) && !FileUtils.compare_file(src, dest)
     end
   end
 end
