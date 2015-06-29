@@ -52,7 +52,7 @@ class GitRemoteUrlFormatter
   end
 
   def compare_url(url, branch)
-    master_compare url, branch
+    master_compare format_base_url(url), branch
   end
 
   private

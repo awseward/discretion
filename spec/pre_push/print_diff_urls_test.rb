@@ -7,7 +7,7 @@ require './hooks/pre_push/print_diff_urls'
 class TestDiffUrls < Minitest::Test
   def setup
     @formatter = GitRemoteUrlFormatter.new
-    @ssh_url = "git@github.com:some_user/some-repo.git"
+    @ssh_url = "git@github.com:awseward/overcommit-hooks.git"
   end
 
   def test_base_url_formatting
