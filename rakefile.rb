@@ -8,6 +8,8 @@ Rake::TestTask.new do |t|
   t.verbose = true
 end
 
+task :hooks => 'hooks:run'
+
 namespace :hooks do
   desc 'Copies all hooks in `hooks/` to `.git-hooks/`'
   task :install do
@@ -50,5 +52,10 @@ namespace :hooks do
     hook_types.each do |type|
       sh "overcommit --sign #{type}"
     end
+  end
+
+  desc 'Runs pre-commit hooks'
+  task :run => [:install, :sign] do
+    sh "overcommit --run"
   end
 end
