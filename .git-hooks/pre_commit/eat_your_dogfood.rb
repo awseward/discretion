@@ -2,6 +2,10 @@ require 'overcommit'
 
 module Overcommit::Hook::PreCommit
   class EatYourDogfood < Base
+    def description
+      "Checking that you're eating your dog food"
+    end
+
     def run
       src_hooks = hooks_dirs.map do |dir|
         Dir.chdir dir do
