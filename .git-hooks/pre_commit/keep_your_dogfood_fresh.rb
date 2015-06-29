@@ -37,8 +37,10 @@ module Overcommit::Hook::PreCommit
       end
     end
 
+    private
+
     def get_src_hook_info
-      DogfoodServiceObject.get_source_hooks(['hooks', 'meta-hooks'])
+      DogfoodServiceObject.get_source_hook_info(['hooks', 'meta-hooks'])
     end
 
     def get_plugin_dir

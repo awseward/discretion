@@ -7,25 +7,19 @@ module Overcommit::Hook::PreCommit
     end
 
     def run
-      src_hooks = hooks_dirs.map do |dir|
-        Dir.chdir dir do
-          Dir.glob "**/*.rb"
-        end
+      src_hooks = get_src_hook_info.map do |info|
+        info[:rel_paths]
       end.flatten
 
-      dest_hooks = Dir.chdir plugin_dir do
-        Dir.glob "**/*.rb"
-      end
+      missing = src_hooks - get_existing_dest_hooks
 
-      missing_hooks = src_hooks - dest_hooks
-
-      if missing_hooks.any?
+      if missing.any?
         messages = [
           "The following hooks are missing from #{plugin_dir}",
-          missing_hooks.map{|h| "  #{h}"}.join("\n"),
+          missing.map{|h| "  #{h}"}.join("\n"),
         ]
 
-        [:warn, messages.join("\n")]
+        [:fail, messages.join("\n")]
       else
         :pass
       end
@@ -39,6 +33,14 @@ module Overcommit::Hook::PreCommit
 
     def hooks_dirs
       config['hooks_dirs'] || ['hooks', 'meta-hooks']
+    end
+
+    def get_src_hook_info
+      DogfoodServiceObject.get_source_hook_info hooks_dirs
+    end
+
+    def get_existing_dest_hooks
+      DogfoodServiceObject.get_existing_dest_hooks plugin_dir
     end
   end
 end

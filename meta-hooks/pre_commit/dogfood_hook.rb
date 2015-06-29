@@ -9,12 +9,16 @@ module Overcommit::Hook::PreCommit
 end
 
 class DogfoodServiceObject
-  def self.get_source_hooks(src_dirs)
+  def self.get_source_hook_info(src_dirs)
     src_dirs.map do |dir|
       rel_paths = Dir.chdir(dir){ Dir.glob "**/*.rb" }
 
       { :src_dir => dir, :rel_paths => rel_paths }
     end
+  end
+
+  def self.get_existing_dest_hooks(plugin_dir)
+    Dir.chdir(plugin_dir){ Dir.glob '**/*.rb' }
   end
 end
 
