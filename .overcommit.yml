@@ -10,6 +10,9 @@ PreCommit:
   KeepYourDogfoodFresh:
     enabled: true
 
+  ReallyEatYourDogfood:
+    enabled: true
+
   FearOfCommitment:
     enabled: true
 
