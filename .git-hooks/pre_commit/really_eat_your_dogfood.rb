@@ -8,7 +8,21 @@ module Overcommit::Hook::PreCommit
     end
 
     def run
-      [:warn, get_installed_plugins.to_yaml]
+      config = get_config_hash
+      installed = get_installed_plugins
+
+      difference = get_difference installed, config
+
+      if difference.empty?
+        :pass
+      else
+        messages = [
+          'The following is missing from your .overcommit.yml',
+          difference.to_yaml,
+        ]
+
+        [:warn, messages.join("\n")]
+      end
     end
 
     private
@@ -31,7 +45,7 @@ module Overcommit::Hook::PreCommit
     end
 
     def get_installed_plugins
-      paths = Dir['*hooks/**/*.rb']
+      paths = Dir['.git-hooks/**/*.rb']
 
       paths.reduce({}) do |seed, curr|
         type = get_hook_type curr
@@ -42,6 +56,39 @@ module Overcommit::Hook::PreCommit
           type => hooks.merge(plugin_hash(name))
         })
       end
+    end
+
+    def intersect(h1, h2)
+      h2_keys = h2.keys
+      h1.select{|key,_| h2_keys.include? key}
+    end
+
+    def except(h1, h2)
+      h2_keys = h2.keys
+      h1.reject{|key,_| h2_keys.include? key}
+    end
+
+    def get_difference_r(expected, actual, recurse)
+      expected.reduce({}) do |seed, curr|
+        if actual.has_key? curr.first
+          if recurse
+            difference = get_difference_r curr.last, actual[curr.first], false
+            if difference.empty?
+              seed
+            else
+              seed.merge({curr.first => difference})
+            end
+          else
+            seed
+          end
+        else
+          seed.merge({curr.first => curr.last})
+        end
+      end
+    end
+
+    def get_difference(expected, actual)
+      get_difference_r expected, actual, true
     end
   end
 end
