@@ -1,13 +1,5 @@
 require 'overcommit'
 
-module Overcommit::Hook::PreCommit
-  class DogfoodHook < Base
-    def run
-      :pass
-    end
-  end
-end
-
 class DogfoodServiceObject
   def self.get_source_hook_info(src_dirs)
     src_dirs.map do |dir|

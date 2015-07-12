@@ -1,4 +1,5 @@
 require 'overcommit'
+require './lib/dogfood'
 
 module Overcommit::Hook::PreCommit
   class KeepYourDogfoodFresh < Base

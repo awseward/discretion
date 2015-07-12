@@ -1,6 +1,5 @@
 *
 !.gitignore
-!dogfood_hook.rb
 !eat_your_dogfood.rb
 !keep_your_dogfood_fresh.rb
 !really_eat_your_dogfood.rb

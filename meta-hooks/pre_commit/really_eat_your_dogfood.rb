@@ -17,7 +17,7 @@ module Overcommit::Hook::PreCommit
         :pass
       else
         messages = [
-          'The following is missing from your .overcommit.yml',
+          'The following is missing from .overcommit.yml:',
           diff.to_yaml,
         ]
 
@@ -73,7 +73,7 @@ module Overcommit::Hook::PreCommit
         if !h2.has_key? current.first
           seed.merge({current.first => current.last})
         else
-          if (currDepth == maxDepth)
+          if currDepth == maxDepth
             seed
           else
             diff = key_diff_r current.last, h2[current.first], maxDepth, currDepth + 1
