@@ -11,14 +11,14 @@ module Overcommit::Hook::PreCommit
       config = get_config_hash
       installed = get_installed_plugins
 
-      difference = get_difference installed, config
+      diff = key_diff installed, config
 
-      if difference.empty?
+      if diff.empty?
         :pass
       else
         messages = [
           'The following is missing from your .overcommit.yml',
-          difference.to_yaml,
+          diff.to_yaml,
         ]
 
         [:warn, messages.join("\n")]
@@ -68,27 +68,28 @@ module Overcommit::Hook::PreCommit
       h1.reject{|key,_| h2_keys.include? key}
     end
 
-    def get_difference_r(expected, actual, recurse)
-      expected.reduce({}) do |seed, curr|
-        if actual.has_key? curr.first
-          if recurse
-            difference = get_difference_r curr.last, actual[curr.first], false
-            if difference.empty?
+    def key_diff_r(h1, h2, maxDepth, currDepth)
+      h1.reduce({}) do |seed, current|
+        if !h2.has_key? current.first
+          seed.merge({current.first => current.last})
+        else
+          if (currDepth == maxDepth)
+            seed
+          else
+            diff = key_diff_r current.last, h2[current.first], maxDepth, currDepth + 1
+
+            if diff.empty?
               seed
             else
-              seed.merge({curr.first => difference})
+              seed.merge({current.first => diff})
             end
-          else
-            seed
           end
-        else
-          seed.merge({curr.first => curr.last})
         end
       end
     end
 
-    def get_difference(expected, actual)
-      get_difference_r expected, actual, true
+    def key_diff(h1, h2)
+      key_diff_r h1, h2, 2, 0
     end
   end
 end
