@@ -1,33 +1,36 @@
 # https://github.com/brigade/overcommit
 
 PreCommit:
+  # Built-in
   BundleCheck:
     enabled: true
-
-  EatYourDogfood:
-    enabled: true
-
-  KeepYourDogfoodFresh:
-    enabled: true
-
-  ReallyEatYourDogfood:
-    enabled: true
-
-  FearOfCommitment:
-    enabled: true
-
   TrailingWhitespace:
     enabled: true
     problem_on_unmodified_line: ignore
 
-CommitMsg:
-  HardTabs:
+  # Custom
+  EatYourDogfood:
+    enabled: true
+  KeepYourDogfoodFresh:
+    enabled: true
+  ReallyEatYourDogfood:
+    enabled: true
+  FearOfCommitment:
     enabled: true
 
+CommitMsg:
+  # Built-in
+  HardTabs:
+    enabled: true
   RussianNovel:
     enabled: true
 
+  # Custom
+
 PrePush:
+  #Built-in
+
+  #Custom
   PrintDiffUrls:
     enabled: true
     on_fail: warn
