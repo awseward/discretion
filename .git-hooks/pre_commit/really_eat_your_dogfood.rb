@@ -17,8 +17,10 @@ module Overcommit::Hook::PreCommit
         :pass
       else
         messages = [
-          'The following is missing from .overcommit.yml:',
-          diff.to_yaml,
+          "It appears you haven't enabled the following hooks present in .git-hooks/",
+          diff.map{|k, v| {k => v.keys} }.reduce({}, :merge).to_yaml,
+          'A more complete .overcommit.yml would look like this:',
+          config.merge(diff).to_yaml,
         ]
 
         [:warn, messages.join("\n")]
@@ -26,6 +28,7 @@ module Overcommit::Hook::PreCommit
     end
 
     private
+
     def get_config_hash
       YAML.load_file '.overcommit.yml'
     end
