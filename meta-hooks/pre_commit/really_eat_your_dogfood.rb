@@ -8,7 +8,7 @@ module Overcommit::Hook::PreCommit
     end
 
     def run
-      [:warn, 'TODO']
+      [:warn, get_installed_plugins.to_yaml]
     end
 
     private
@@ -26,7 +26,7 @@ module Overcommit::Hook::PreCommit
       filename_to_classname File.dirname(path)
     end
 
-    def base_enabled_hash(plugin)
+    def plugin_hash(plugin)
       {plugin => {"enabled" => true}}
     end
 
@@ -37,14 +37,10 @@ module Overcommit::Hook::PreCommit
         type = get_hook_type curr
         name = filename_to_classname curr
 
-        if seed.has_key?(type)
-          hooks = seed[type]
-          new_hash = {type => hooks.merge(base_enabled_hash(name))}
-          seed.merge new_hash
-        else
-          new_hash = {type => base_enabled_hash(name)}
-          seed.merge new_hash
-        end
+        hooks = seed[type] || {}
+        seed.merge({
+          type => hooks.merge(plugin_hash(name))
+        })
       end
     end
   end
