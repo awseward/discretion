@@ -1,17 +1,20 @@
-require 'fileutils'
-require 'rake/testtask'
+require "bundler/gem_tasks"
+require "fileutils"
+require "rake/testtask"
 
 task :default => [:test]
 
-Rake::TestTask.new do |t|
-  t.test_files = FileList['**/*_test.rb']
+Rake::TestTask.new(:test) do |t|
+  t.libs << "test"
+  t.libs << "lib"
+  t.test_files = FileList["**/*_test.rb"]
   t.verbose = true
 end
 
-task :hooks => 'hooks:run'
+task :hooks => "hooks:run"
 
 namespace :hooks do
-  desc 'Copies all hooks in `hooks/` to `.git-hooks/`'
+  desc "Copies all hooks in `hooks/` to `.git-hooks/`"
   task :install do
     plugin_directory = ".git-hooks"
     src_hooks_dirs = ["hooks", "meta-hooks"]
@@ -36,17 +39,17 @@ namespace :hooks do
     end
   end
 
-  desc 'Signs all overcommit hooks'
+  desc "Signs all overcommit hooks"
   task :sign do
     hook_types = [
-      'commit_msg',
-      'post_checkout',
-      'post_commit',
-      'post_merge',
-      'post_rewrite',
-      'pre_commit',
-      'pre_push',
-      'pre_rebase',
+      "commit_msg",
+      "post_checkout",
+      "post_commit",
+      "post_merge",
+      "post_rewrite",
+      "pre_commit",
+      "pre_push",
+      "pre_rebase",
     ]
 
     hook_types.each do |type|
@@ -54,7 +57,7 @@ namespace :hooks do
     end
   end
 
-  desc 'Runs pre-commit hooks'
+  desc "Runs pre-commit hooks"
   task :run => [:install, :sign] do
     sh "overcommit --run"
   end
