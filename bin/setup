@@ -4,4 +4,5 @@ IFS=$'\n\t'
 
 bundle install
 
-# Do any other automated setup that you need to do here
+bundle exec rake hooks:install
+bundle exec rake hooks:sign
