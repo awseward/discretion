@@ -78,7 +78,7 @@ class GitUrlFormat
   end
 
   def self.ssh_to_https(url)
-    host, path = url.match(/^.*@(.+):(.+).git/).captures
+    host, path = url.match(/^.*@(.+):(.+)(.git)?/).captures.compact
     "https://#{host}/#{path}"
   end
 
